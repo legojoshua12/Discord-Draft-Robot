@@ -12,7 +12,6 @@ from PIL import Image
 
 token = config["token"]
 
-
 async def displayembed(message, playerNumber, civs):
     global civ_dict
     embed = discord.Embed(
