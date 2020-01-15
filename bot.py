@@ -115,7 +115,7 @@ class MyClientBot(discord.Client):
                             unusedCivs.remove(randomInt)
                             randomIDArray[x].append(randomInt)
                             exit = True
-                        except:
+                        except asyncio.TimeoutError:
                             print('Generated a number that already exists')
 
             for p in range(0, len(randomIDArray)):
