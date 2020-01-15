@@ -1,6 +1,6 @@
 # Core Modules
 import asyncio
-import io
+from config import config
 
 import discord
 import requests
@@ -10,7 +10,7 @@ import random
 import json
 from PIL import Image
 
-token = 'NjYzNDg0NTA5NTA4OTkzMDQ0.Xh63EQ.VZ2tFFSPO6CmzfjWccEhfJcDUlg'
+token = config["token"]
 
 
 async def displayembed(message, playerNumber, civs):
@@ -123,4 +123,5 @@ class MyClientBot(discord.Client):
 
 civ_dict = "NULL"
 client = MyClientBot()
+print(token)
 client.run(token)
