@@ -10,7 +10,7 @@ import random
 import json
 from PIL import Image
 
-token = 'NjYzNDg0NTA5NTA4OTkzMDQ0.XhJMJA.3dyqXNPjbLrbHMF8h2apDAnAF9Y'
+token = 'NjYzNDg0NTA5NTA4OTkzMDQ0.Xh62Eg.ZS1HMat-UzQgB8iy08jqUk_ipQw'
 
 
 async def displayembed(message, playerNumber, civs):
