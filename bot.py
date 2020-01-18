@@ -1,6 +1,6 @@
 # Core Modules
 import asyncio
-from config import config
+# from config import config
 
 import discord
 import requests
@@ -10,12 +10,14 @@ import random
 import json
 from PIL import Image
 
-token = config["token"]
+# token = config["token"]
+token = 'NjY3NjIyMjc5ODczNjkxNjUw.XiFZuA.mGUWfS6ArirvT9x2sY57hyV9L2M'
+
 
 async def displayembed(message, playerNumber, civs):
     global civ_dict
     embed = discord.Embed(
-        title='Player ' + str(playerNumber+1),
+        title='Player ' + str(playerNumber + 1),
         colour=random.randint(0, 0xffffff)
     )
     # imageArray = []
@@ -33,7 +35,7 @@ async def displayembed(message, playerNumber, civs):
                 # imageArray.append('icons/'+imageName)
 
     ran = random.randint(1, len(allImages))
-    embed.set_thumbnail(url=str(allImages[ran-1]))
+    embed.set_thumbnail(url=str(allImages[ran - 1]))
 
     # images = [Image.open(x) for x in imageArray]
     # widths, heights = zip(*(i.size for i in images))
@@ -45,8 +47,8 @@ async def displayembed(message, playerNumber, civs):
 
     # x_offset = 0
     # for im in images:
-        # new_im.paste(im, (x_offset, 0))
-        # x_offset += im.size[0]
+    # new_im.paste(im, (x_offset, 0))
+    # x_offset += im.size[0]
 
     # new_im.save('icons/test.png')
     # file = discord.File("icons/test.png", filename="test.png")
@@ -54,6 +56,49 @@ async def displayembed(message, playerNumber, civs):
     await message.channel.send(embed=embed)
     # await message.channel.send(file=file)
     embed.clear_fields()
+
+
+async def civDraft(self, message):
+    global civ_dict
+
+    def is_valid_number(m):
+        return m.author == message.author and m.content.isdigit()
+
+    # Ask for number of players
+    await message.channel.send('How many players are playing?')
+    try:
+        number_players = await self.wait_for('message', check=is_valid_number)
+    except asyncio.TimeoutError:
+        return
+
+    # Ask for number of civs per player
+    await message.channel.send('How many civilizations do you want to draft?')
+    try:
+        number_civs = await self.wait_for('message', check=is_valid_number)
+    except asyncio.TimeoutError:
+        return
+
+    unusedCivs = []
+    for i in civ_dict:
+        unusedCivs.append(int(i['ID']))
+
+    randomIDArray = []
+    civsLen = len(unusedCivs)
+    for x in range(0, int(number_players.content)):
+        randomIDArray.insert(x, [])
+        for y in range(0, int(number_civs.content)):
+            exit = False
+            while exit == False:
+                randomInt = random.randint(1, civsLen)
+                try:
+                    unusedCivs.remove(randomInt)
+                    randomIDArray[x].append(randomInt)
+                    exit = True
+                except:
+                    print('Generated a number that already exists')
+
+    for p in range(0, len(randomIDArray)):
+        await displayembed(message, p, randomIDArray[p])
 
 
 class MyClientBot(discord.Client):
@@ -65,7 +110,7 @@ class MyClientBot(discord.Client):
         print('------')
         print('Loading civs: ')
         global civ_dict
-        with open('civilizations.json', 'r') as f:
+        with open('JSON/civilizations.json', 'r') as f:
             civ_dict = json.load(f)
         print('Setting Status')
         await client.change_presence(activity=discord.Game(name='Sid Meier’s Civilization 5'),
@@ -78,49 +123,15 @@ class MyClientBot(discord.Client):
         if message.author == self.user.id:
             return
 
-        if message.content.startswith('!draft'):
-            global civ_dict
+        if message.content.startswith('*draft'):
+            s = message.content.split()
+            print(s)
+            if s[0] == '*draft':
+                if s[1] == 'civ':
+                    await civDraft(self, message)
 
-            def is_valid_number(m):
-                return m.author == message.author and m.content.isdigit()
 
-            # Ask for number of players
-            await message.channel.send('How many players are playing?')
-            try:
-                number_players = await self.wait_for('message', check=is_valid_number)
-            except asyncio.TimeoutError:
-                return
-
-            # Ask for number of civs per player
-            await message.channel.send('How many civilizations do you want to draft?')
-            try:
-                number_civs = await self.wait_for('message', check=is_valid_number)
-            except asyncio.TimeoutError:
-                return
-
-            unusedCivs = []
-            for i in civ_dict:
-                unusedCivs.append(int(i['ID']))
-
-            randomIDArray = []
-            civsLen = len(unusedCivs)
-            for x in range(0, int(number_players.content)):
-                randomIDArray.insert(x, [])
-                for y in range(0, int(number_civs.content)):
-                    exit = False
-                    while exit == False:
-                        randomInt = random.randint(1, civsLen)
-                        try:
-                            unusedCivs.remove(randomInt)
-                            randomIDArray[x].append(randomInt)
-                            exit = True
-                        except:
-                            print('Generated a number that already exists')
-
-            for p in range(0, len(randomIDArray)):
-                await displayembed(message, p, randomIDArray[p])
-
-civ_dict = "NULL"
+civ_dict = 'NULL'
+hoi_dict = 'NULL'
 client = MyClientBot()
-print(token)
 client.run(token)
