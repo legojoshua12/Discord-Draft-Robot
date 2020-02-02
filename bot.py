@@ -11,7 +11,7 @@ import json
 from PIL import Image
 
 # token = config["token"]
-token = 'NjY3NjIyMjc5ODczNjkxNjUw.XiMyDQ.ssXxzKOuW3PUVktYXy-n7Mt5oTo'
+token = ''
 
 
 async def displayembed(message, playerNumber, civs):
