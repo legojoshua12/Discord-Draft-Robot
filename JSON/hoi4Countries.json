@@ -1,0 +1,22 @@
+[
+	{
+		"Name": "Afghanistan",
+		"ID": "1",
+		"Flag": "https://hoi4.paradoxwikis.com/images/7/7d/Afghanistan.png"
+	},
+    {
+		"Name": "Albania",
+		"ID": "2",
+		"Flag": "https://hoi4.paradoxwikis.com/images/0/07/Albania.png"
+	},
+    {
+		"Name": "Argentina",
+		"ID": "3",
+		"Flag": "https://hoi4.paradoxwikis.com/images/a/a2/Argentina.png"
+	},
+    {
+		"Name": "Australia",
+		"ID": "4",
+		"Flag": "https://hoi4.paradoxwikis.com/images/4/43/Australia.png"
+	}
+]
