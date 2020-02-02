@@ -11,7 +11,7 @@ import json
 from PIL import Image
 
 # token = config["token"]
-token = ''
+token = 'NjY3NjIyMjc5ODczNjkxNjUw.XiMyDQ.ssXxzKOuW3PUVktYXy-n7Mt5oTo'
 
 
 async def displayembed(message, playerNumber, civs):
@@ -124,7 +124,7 @@ class MyClientBot(discord.Client):
         with open('JSON/civilizations.json', 'r') as f:
             civ_dict = json.load(f)
         print('Setting Status')
-        await client.change_presence(activity=discord.Game(name='Random!'),
+        await client.change_presence(activity=discord.Game(name='Something Random!'),
                                      status=discord.Status.online, afk=False)
         print('Done!')
         print('')
@@ -134,11 +134,34 @@ class MyClientBot(discord.Client):
         if message.author == self.user.id:
             return
 
-        if message.content.startswith('*draft'):
+        if message.content.startswith('*'):
             s = message.content.split()
             messageLength = len(s)
-            if messageLength == 1 and s[0] == '*draft':
-                await message.channel.send(message.author.mention + ' Unknown command. Use `*help` to view the list of all commands.')
+            if s[0].lower() == '*help':
+                if messageLength == 1:
+                    embed = discord.Embed(
+                        title='Commands',
+                        colour=random.randint(0x53a635, 0x7d1414)
+                    )
+                    embed.add_field(name='*help', value='Displays all commands.', inline=False)
+                    embed.add_field(name='*help games', value='Displays all currently supported games.', inline=False)
+                    embed.add_field(name='*draft [game]',
+                                    value='Starts a draft, you must specify a game for the robot to draft',
+                                    inline=False)
+                    await message.channel.send(embed=embed)
+                elif s[1].lower() == 'games':
+                    embed = discord.Embed(
+                        title='Games',
+                        colour=random.randint(0x53a635, 0x7d1414)
+                    )
+                    embed.add_field(name='hoi4', value='Hearts of Iron IV', inline=False)
+                    embed.add_field(name='civ', value='Sid Meier’s Civilization V', inline=False)
+                    await message.channel.send(embed=embed)
+            elif messageLength == 1 and s[0].lower() == '*draft':
+                await message.channel.send(message.author.mention + ' Unspecified game. Please use `*help games` to view the list of all the supported games.')
+            elif s[0].lower() != '*draft':
+                await message.channel.send(
+                    message.author.mention + ' Unknown command. Use `*help` to view the list of all commands.')
             if s[0] == '*draft':
                 if messageLength >= 2:
                     if s[1] == 'civ':
@@ -148,6 +171,16 @@ class MyClientBot(discord.Client):
                             await civDraft(self, message, s[2])
                         elif messageLength == 4:
                             await civDraft(self, message, s[2], s[3])
+                    elif s[1] == 'hoi4':
+                        if messageLength == 2:
+                            await civDraft(self, message)
+                        elif messageLength == 3:
+                            await civDraft(self, message, s[2])
+                        elif messageLength == 4:
+                            await civDraft(self, message, s[2], s[3])
+                    else:
+                        await message.channel.send(
+                            message.author.mention + ' Unknown game. Please use `*help games` to view the list of all the supported games.')
 
 
 civ_dict = 'NULL'
