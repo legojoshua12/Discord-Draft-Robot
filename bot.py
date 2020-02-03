@@ -77,7 +77,6 @@ async def displayEmbedCountries(message, playerNumber, countries):
     for m in allCountries:
         totalString = totalString + m + '\n'
     embed.add_field(name='\u200b', value=totalString, inline=True)
-    print(totalString)
     ran = random.randint(1, len(allImages))
     embed.set_thumbnail(url=str(allImages[ran - 1]))
     await message.channel.send(embed=embed)
@@ -136,7 +135,7 @@ async def civDraft(self, message, pl=0, cipp=0):
     for p in range(0, len(randomIDArray)):
         await displayEmbedCivs(message, p, randomIDArray[p])
 
-async def hoiDraft(self, message, pl=0, cpp=0):
+async def hoiDraft(self, message, pl=0, cpp=0, notRequireMajor=False):
     global hoi_dict
 
     def is_valid_number(m):
@@ -163,7 +162,7 @@ async def hoiDraft(self, message, pl=0, cpp=0):
         number_countries = cpp
 
     if isinstance(number_countries, str) == False:
-        number_civs = number_countries.content
+        number_countries = number_countries.content
     if isinstance(number_players, str) == False:
         number_players = number_players.content
 
