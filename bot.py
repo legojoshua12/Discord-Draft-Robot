@@ -14,7 +14,7 @@ from PIL import Image
 token = ''
 
 
-async def displayembed(message, playerNumber, civs):
+async def displayEmbedCivs(message, playerNumber, civs):
     global civ_dict
     embed = discord.Embed(
         title='Player ' + str(playerNumber + 1),
@@ -57,6 +57,24 @@ async def displayembed(message, playerNumber, civs):
     # await message.channel.send(file=file)
     embed.clear_fields()
 
+async def displayEmbedCountries(message, playerNumber, countries):
+    global hoi_dict
+    embed = discord.Embed(
+        title='Player ' + str(playerNumber + 1),
+        colour=random.randint(0, 0xffffff)
+    )
+    allImages = []
+    for civ in hoi_dict:
+        for c in countries:
+            if c == int(civ['ID']):
+                embed.add_field(name=civ['ID'], value=civ['Name'], inline=True)
+                i = civ['Flag']
+                allImages.append(i)
+
+    ran = random.randint(1, len(allImages))
+    embed.set_thumbnail(url=str(allImages[ran - 1]))
+    await message.channel.send(embed=embed)
+    embed.clear_fields()
 
 async def civDraft(self, message, pl=0, cipp=0):
     global civ_dict
@@ -109,7 +127,60 @@ async def civDraft(self, message, pl=0, cipp=0):
                     pass
 
     for p in range(0, len(randomIDArray)):
-        await displayembed(message, p, randomIDArray[p])
+        await displayEmbedCivs(message, p, randomIDArray[p])
+
+async def hoiDraft(self, message, pl=0, cpp=0):
+    global hoi_dict
+
+    def is_valid_number(m):
+        return m.author == message.author and m.content.isdigit()
+
+    # Ask for number of players if not provided
+    if pl == 0:
+        await message.channel.send('How many players are playing?')
+        try:
+            number_players = await self.wait_for('message', check=is_valid_number)
+        except asyncio.TimeoutError:
+            return
+    else:
+        number_players = pl
+
+    # Ask for number of countries per player if not provided
+    if cpp == 0:
+        await message.channel.send('How many countries do you want to draft?')
+        try:
+            number_countries = await self.wait_for('message', check=is_valid_number)
+        except asyncio.TimeoutError:
+            return
+    else:
+        number_countries = cpp
+
+    if isinstance(number_countries, str) == False:
+        number_civs = number_countries.content
+    if isinstance(number_players, str) == False:
+        number_players = number_players.content
+
+    unusedCountries = []
+    for i in hoi_dict:
+        unusedCountries.append(int(i['ID']))
+
+    randomIDArray = []
+    counLen = len(unusedCountries)
+    for x in range(0, int(number_players)):
+        randomIDArray.insert(x, [])
+        for y in range(0, int(number_countries)):
+            exit = False
+            while exit == False:
+                randomInt = random.randint(1, counLen)
+                try:
+                    unusedCountries.remove(randomInt)
+                    randomIDArray[x].append(randomInt)
+                    exit = True
+                except:
+                    pass
+
+    for p in range(0, len(randomIDArray)):
+        await displayEmbedCountries(message, p, randomIDArray[p])
 
 
 class MyClientBot(discord.Client):
@@ -123,6 +194,10 @@ class MyClientBot(discord.Client):
         global civ_dict
         with open('JSON/civilizations.json', 'r') as f:
             civ_dict = json.load(f)
+        print('Loading countries:')
+        global hoi_dict
+        with open('JSON/hoi4Countries.json', 'r') as m:
+            hoi_dict = json.load(m)
         print('Setting Status')
         await client.change_presence(activity=discord.Game(name='Something Random!'),
                                      status=discord.Status.online, afk=False)
@@ -173,17 +248,17 @@ class MyClientBot(discord.Client):
                             await civDraft(self, message, s[2], s[3])
                     elif s[1] == 'hoi4':
                         if messageLength == 2:
-                            await civDraft(self, message)
+                            await hoiDraft(self, message)
                         elif messageLength == 3:
-                            await civDraft(self, message, s[2])
+                            await hoiDraft(self, message, s[2])
                         elif messageLength == 4:
-                            await civDraft(self, message, s[2], s[3])
+                            await hoiDraft(self, message, s[2], s[3])
                     else:
                         await message.channel.send(
                             message.author.mention + ' Unknown game. Please use `*help games` to view the list of all the supported games.')
 
 
-civ_dict = 'NULL'
-hoi_dict = 'NULL'
+civ_dict = None
+hoi_dict = None
 client = MyClientBot()
 client.run(token)
