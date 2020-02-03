@@ -64,13 +64,20 @@ async def displayEmbedCountries(message, playerNumber, countries):
         colour=random.randint(0, 0xffffff)
     )
     allImages = []
-    for civ in hoi_dict:
-        for c in countries:
-            if c == int(civ['ID']):
-                embed.add_field(name=civ['ID'], value=civ['Name'], inline=True)
-                i = civ['Flag']
+    allCountries = []
+    for cou in hoi_dict:
+        for idcountry in countries:
+            if idcountry == int(cou['ID']):
+                allCountries.append(cou['Name'])
+                # embed.add_field(name='\u200b', value=cou['Name'], inline=False)
+                i = cou['Flag']
                 allImages.append(i)
 
+    totalString = ''
+    for m in allCountries:
+        totalString = totalString + m + '\n'
+    embed.add_field(name='\u200b', value=totalString, inline=True)
+    print(totalString)
     ran = random.randint(1, len(allImages))
     embed.set_thumbnail(url=str(allImages[ran - 1]))
     await message.channel.send(embed=embed)
@@ -190,11 +197,11 @@ class MyClientBot(discord.Client):
         print(self.user.name)
         print(self.user.id)
         print('------')
-        print('Loading civs: ')
+        print('Loading civs')
         global civ_dict
         with open('JSON/civilizations.json', 'r') as f:
             civ_dict = json.load(f)
-        print('Loading countries:')
+        print('Loading countries')
         global hoi_dict
         with open('JSON/hoi4Countries.json', 'r') as m:
             hoi_dict = json.load(m)

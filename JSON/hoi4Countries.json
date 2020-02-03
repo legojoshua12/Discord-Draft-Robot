@@ -2,21 +2,115 @@
 	{
 		"Name": "Afghanistan",
 		"ID": "1",
-		"Flag": "https://hoi4.paradoxwikis.com/images/7/7d/Afghanistan.png"
+		"Flag": "https://hoi4.paradoxwikis.com/images/7/7d/Afghanistan.png",
+		"IsMajor": "False"
 	},
     {
 		"Name": "Albania",
 		"ID": "2",
-		"Flag": "https://hoi4.paradoxwikis.com/images/0/07/Albania.png"
+		"Flag": "https://hoi4.paradoxwikis.com/images/0/07/Albania.png",
+		"IsMajor": "False"
 	},
     {
 		"Name": "Argentina",
 		"ID": "3",
-		"Flag": "https://hoi4.paradoxwikis.com/images/a/a2/Argentina.png"
+		"Flag": "https://hoi4.paradoxwikis.com/images/a/a2/Argentina.png",
+		"IsMajor": "False"
 	},
     {
 		"Name": "Australia",
 		"ID": "4",
-		"Flag": "https://hoi4.paradoxwikis.com/images/4/43/Australia.png"
+		"Flag": "https://hoi4.paradoxwikis.com/images/4/43/Australia.png",
+		"IsMajor": "True"
+	},
+	{
+		"Name": "Austria",
+		"ID": "5",
+		"Flag": "https://hoi4.paradoxwikis.com/images/7/7f/Austria.png",
+		"IsMajor": "False"
+	},
+	{
+		"Name": "Belgium",
+		"ID": "6",
+		"Flag": "https://hoi4.paradoxwikis.com/images/3/32/Belgium.png",
+		"IsMajor": "False"
+	},
+	{
+		"Name": "Bhutan",
+		"ID": "7",
+		"Flag": "https://hoi4.paradoxwikis.com/images/8/85/Bhutan.png",
+		"IsMajor": "False"
+	},
+	{
+		"Name": "Bolivia",
+		"ID": "8",
+		"Flag": "https://hoi4.paradoxwikis.com/images/3/38/Bolivia.png",
+		"IsMajor": "False"
+	},
+	{
+		"Name": "Brazil",
+		"ID": "9",
+		"Flag": "https://hoi4.paradoxwikis.com/images/8/8c/Brazil.png",
+		"IsMajor": "False"
+	},
+	{
+		"Name": "British Malaya",
+		"ID": "10",
+		"Flag": "https://hoi4.paradoxwikis.com/images/f/f7/British_Malaya.png",
+		"IsMajor": "False"
+	},
+	{
+		"Name": "British Raj",
+		"ID": "11",
+		"Flag": "https://hoi4.paradoxwikis.com/images/2/2f/British_Raj.png",
+		"IsMajor": "True"
+	},
+	{
+		"Name": "Bulgaria",
+		"ID": "12",
+		"Flag": "https://hoi4.paradoxwikis.com/images/f/f4/Bulgaria.png",
+		"IsMajor": "False"
+	},
+	{
+		"Name": "Chile",
+		"ID": "13",
+		"Flag": "https://hoi4.paradoxwikis.com/images/f/fa/Chile.png",
+		"IsMajor": "False"
+	},
+	{
+		"Name": "China",
+		"ID": "14",
+		"Flag": "https://hoi4.paradoxwikis.com/images/8/81/China.png",
+		"IsMajor": "True"
+	},
+	{
+		"Name": "Colombia",
+		"ID": "15",
+		"Flag": "https://hoi4.paradoxwikis.com/images/8/80/Colombia.png",
+		"IsMajor": "False"
+	},
+	{
+		"Name": "Communist China",
+		"ID": "16",
+		"Flag": "https://hoi4.paradoxwikis.com/images/c/c1/Chinese_People%27s_Republic.png",
+		"IsMajor": "True"
+	},
+	{
+		"Name": "Costa Rica",
+		"ID": "17",
+		"Flag": "https://hoi4.paradoxwikis.com/images/d/da/Costa_Rica.png",
+		"IsMajor": "False"
+	},
+	{
+		"Name": "Cuba",
+		"ID": "18",
+		"Flag": "https://hoi4.paradoxwikis.com/images/6/6c/Cuba.png",
+		"IsMajor": "False"
+	},
+	{
+		"Name": "Czechoslovakia",
+		"ID": "19",
+		"Flag": "https://hoi4.paradoxwikis.com/images/c/c1/Czechoslovakia.png",
+		"IsMajor": "True"
 	}
 ]
