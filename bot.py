@@ -8,7 +8,6 @@ import requests
 # Code for functions
 import random
 import json
-from PIL import Image
 
 # token = config["token"]
 token = ''
