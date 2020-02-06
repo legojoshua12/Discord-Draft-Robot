@@ -1,6 +1,6 @@
 # Core Modules
 import asyncio
-# from config import config
+from config import config
 
 import discord
 import requests
@@ -9,8 +9,8 @@ import requests
 import random
 import json
 
-# token = config["token"]
-token = ''
+token = config["token"]
+# token = ''
 
 
 async def displayEmbedCivs(message, playerNumber, civs):
