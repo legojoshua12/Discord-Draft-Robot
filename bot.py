@@ -3,14 +3,12 @@ import asyncio
 from config import config
 
 import discord
-import requests
 
 # Code for functions
 import random
 import json
 
 token = config["token"]
-# token = ''
 
 
 async def displayEmbedCivs(message, playerNumber, civs):
@@ -19,41 +17,17 @@ async def displayEmbedCivs(message, playerNumber, civs):
         title='Player ' + str(playerNumber + 1),
         colour=random.randint(0, 0xffffff)
     )
-    # imageArray = []
     allImages = []
     for civ in civ_dict:
         for c in civs:
             if c == int(civ['ID']):
                 embed.add_field(name=civ['Leader'], value=civ['Name'], inline=True)
-                # r = requests.get(url=civ['Icon'])
                 i = civ['Icon']
                 allImages.append(i)
-                # image = Image.open(io.BytesIO(r.content))
-                # imageName = 'Test' + str(c) + '.png'
-                # image.save('icons/'+imageName)
-                # imageArray.append('icons/'+imageName)
 
     ran = random.randint(1, len(allImages))
     embed.set_thumbnail(url=str(allImages[ran - 1]))
-
-    # images = [Image.open(x) for x in imageArray]
-    # widths, heights = zip(*(i.size for i in images))
-
-    # total_width = sum(widths)
-    # max_height = max(heights)
-
-    # new_im = Image.new('RGBA', (total_width, max_height))
-
-    # x_offset = 0
-    # for im in images:
-    # new_im.paste(im, (x_offset, 0))
-    # x_offset += im.size[0]
-
-    # new_im.save('icons/test.png')
-    # file = discord.File("icons/test.png", filename="test.png")
-    # embed.set_image(url='')
     await message.channel.send(embed=embed)
-    # await message.channel.send(file=file)
     embed.clear_fields()
 
 
@@ -65,12 +39,11 @@ async def displayEmbedCountries(message, playerNumber, countries):
     )
     allImages = []
     allCountries = []
-    for cou in hoi_dict:
-        for idcountry in countries:
-            if int(idcountry) == int(cou['ID']):
-                allCountries.append(cou['Name'])
-                # embed.add_field(name='\u200b', value=cou['Name'], inline=False)
-                i = cou['Flag']
+    for country in hoi_dict:
+        for countryID in countries:
+            if int(countryID) == int(country['ID']):
+                allCountries.append(country['Name'])
+                i = country['Flag']
                 allImages.append(i)
 
     totalString = ''
