@@ -89,6 +89,13 @@ async def civDraft(self, message, pl=0, cipp=0):
     def is_valid_number(m):
         return m.author == message.author and m.content.isdigit()
 
+    def is_number(f):
+        try:
+            int(f)
+            return True
+        except:
+            return False
+
     # Ask for number of players if not provided
     if pl == 0:
         await message.channel.send('How many players are playing?')
@@ -113,6 +120,17 @@ async def civDraft(self, message, pl=0, cipp=0):
         number_civs = number_civs.content
     if isinstance(number_players, str) == False:
         number_players = number_players.content
+
+    if is_number(number_players):
+        pass
+    else:
+        await message.channel.send(message.author.mention + ' Unknown what `' + number_players + '` means in context')
+        return
+    if is_number(number_civs):
+        pass
+    else:
+        await message.channel.send(message.author.mention + ' Unknown what `' + number_civs + '` means in context')
+        return
 
     unusedCivs = []
     for i in civ_dict:
@@ -143,6 +161,13 @@ async def hoiDraft(self, message, pl=0, cpp=0, notRequireMajor=False):
     def is_valid_number(m):
         return m.author == message.author and m.content.isdigit()
 
+    def is_number(f):
+        try:
+            int(f)
+            return True
+        except:
+            return False
+
     # Ask for number of players if not provided
     if pl == 0:
         await message.channel.send('How many players are playing?')
@@ -167,6 +192,17 @@ async def hoiDraft(self, message, pl=0, cpp=0, notRequireMajor=False):
         number_countries = number_countries.content
     if isinstance(number_players, str) == False:
         number_players = number_players.content
+
+    if is_number(number_players):
+        pass
+    else:
+        await message.channel.send(message.author.mention + ' Unknown what `' + number_players + '` means in context')
+        return
+    if is_number(number_countries):
+        pass
+    else:
+        await message.channel.send(message.author.mention + ' Unknown what `' + number_countries + '` means in context')
+        return
 
     unusedCountries = []
     for g in hoi_dict:
