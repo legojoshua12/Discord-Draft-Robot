@@ -56,6 +56,7 @@ async def displayEmbedCivs(message, playerNumber, civs):
     # await message.channel.send(file=file)
     embed.clear_fields()
 
+
 async def displayEmbedCountries(message, playerNumber, countries):
     global hoi_dict
     embed = discord.Embed(
@@ -66,7 +67,7 @@ async def displayEmbedCountries(message, playerNumber, countries):
     allCountries = []
     for cou in hoi_dict:
         for idcountry in countries:
-            if idcountry == int(cou['ID']):
+            if int(idcountry) == int(cou['ID']):
                 allCountries.append(cou['Name'])
                 # embed.add_field(name='\u200b', value=cou['Name'], inline=False)
                 i = cou['Flag']
@@ -80,6 +81,7 @@ async def displayEmbedCountries(message, playerNumber, countries):
     embed.set_thumbnail(url=str(allImages[ran - 1]))
     await message.channel.send(embed=embed)
     embed.clear_fields()
+
 
 async def civDraft(self, message, pl=0, cipp=0):
     global civ_dict
@@ -134,6 +136,7 @@ async def civDraft(self, message, pl=0, cipp=0):
     for p in range(0, len(randomIDArray)):
         await displayEmbedCivs(message, p, randomIDArray[p])
 
+
 async def hoiDraft(self, message, pl=0, cpp=0, notRequireMajor=False):
     global hoi_dict
 
@@ -166,23 +169,46 @@ async def hoiDraft(self, message, pl=0, cpp=0, notRequireMajor=False):
         number_players = number_players.content
 
     unusedCountries = []
-    for i in hoi_dict:
-        unusedCountries.append(int(i['ID']))
-
+    for g in hoi_dict:
+        unusedCountries.append(g)
     randomIDArray = []
     counLen = len(unusedCountries)
-    for x in range(0, int(number_players)):
-        randomIDArray.insert(x, [])
-        for y in range(0, int(number_countries)):
-            exit = False
-            while exit == False:
-                randomInt = random.randint(1, counLen)
-                try:
-                    unusedCountries.remove(randomInt)
-                    randomIDArray[x].append(randomInt)
-                    exit = True
-                except:
-                    pass
+    if notRequireMajor:
+        for x in range(0, int(number_players)):
+            randomIDArray.insert(x, [])
+            for y in range(0, int(number_countries)):
+                exit = False
+                while exit == False:
+                    randomInt = random.randint(1, counLen)
+                    try:
+                        unusedCountries.remove(hoi_dict[randomInt-1])
+                        randomIDArray[x].append(int(hoi_dict[randomInt-1]['ID']))
+                        exit = True
+                    except:
+                        pass
+    else:
+        for x in range(0, int(number_players)):
+            randomIDArray.insert(x, [])
+            hasMajorCountry = False
+            for y in range(0, int(number_countries)):
+                exit = False
+                while exit == False:
+                    randomInt = random.randint(1, counLen)
+                    if hasMajorCountry == False and hoi_dict[randomInt-1]['IsMajor'] == 'True':
+                        try:
+                            unusedCountries.remove(hoi_dict[randomInt-1])
+                            randomIDArray[x].append(int(hoi_dict[randomInt-1]['ID']))
+                            hasMajorCountry = True
+                            exit = True
+                        except:
+                            pass
+                    elif hasMajorCountry:
+                        try:
+                            unusedCountries.remove(hoi_dict[randomInt-1])
+                            randomIDArray[x].append(int(hoi_dict[randomInt-1]['ID']))
+                            exit = True
+                        except:
+                            pass
 
     for p in range(0, len(randomIDArray)):
         await displayEmbedCountries(message, p, randomIDArray[p])
@@ -193,7 +219,6 @@ class MyClientBot(discord.Client):
     async def on_ready(self):
         print('Logged in as')
         print(self.user.name)
-        print(self.user.id)
         print('------')
         print('Loading civs')
         global civ_dict
@@ -225,7 +250,7 @@ class MyClientBot(discord.Client):
                     )
                     embed.add_field(name='*help', value='Displays all commands.', inline=False)
                     embed.add_field(name='*help games', value='Displays all currently supported games.', inline=False)
-                    embed.add_field(name='*draft [game]',
+                    embed.add_field(name='*draft [game] [args]',
                                     value='Starts a draft, you must specify a game for the robot to draft',
                                     inline=False)
                     await message.channel.send(embed=embed)
@@ -234,11 +259,14 @@ class MyClientBot(discord.Client):
                         title='Games',
                         colour=random.randint(0x53a635, 0x7d1414)
                     )
-                    embed.add_field(name='hoi4', value='Hearts of Iron IV', inline=False)
-                    embed.add_field(name='civ', value='Sid Meier’s Civilization V', inline=False)
+                    embed.add_field(name='*draft hoi4 [players] [countries] [disableMajorRule]',
+                                    value='Hearts of Iron IV', inline=False)
+                    embed.add_field(name='*draft civ [players] [civs]', value='Sid Meier’s Civilization V',
+                                    inline=False)
                     await message.channel.send(embed=embed)
             elif messageLength == 1 and s[0].lower() == '*draft':
-                await message.channel.send(message.author.mention + ' Unspecified game. Please use `*help games` to view the list of all the supported games.')
+                await message.channel.send(
+                    message.author.mention + ' Unspecified game. Please use `*help games` to view the list of all the supported games.')
             elif s[0].lower() != '*draft':
                 await message.channel.send(
                     message.author.mention + ' Unknown command. Use `*help` to view the list of all commands.')
@@ -251,6 +279,9 @@ class MyClientBot(discord.Client):
                             await civDraft(self, message, s[2])
                         elif messageLength == 4:
                             await civDraft(self, message, s[2], s[3])
+                        else:
+                            await message.channel.send(
+                                message.author.mention + ' Unknown command arguments. Use `*help` for more information.')
                     elif s[1] == 'hoi4':
                         if messageLength == 2:
                             await hoiDraft(self, message)
@@ -258,6 +289,17 @@ class MyClientBot(discord.Client):
                             await hoiDraft(self, message, s[2])
                         elif messageLength == 4:
                             await hoiDraft(self, message, s[2], s[3])
+                        elif messageLength == 5:
+                            if s[4].lower() == 'true':
+                                await hoiDraft(self, message, s[2], s[3], True)
+                            elif s[4].lower() == 'false':
+                                await hoiDraft(self, message, s[2], s[3])
+                            else:
+                                await message.channel.send(
+                                    message.author.mention + ' Unknown ' + s[4] + '. Please specify `true` or `false`.')
+                        else:
+                            await message.channel.send(
+                                message.author.mention + ' Unknown command arguments. Use `*help` for more information.')
                     else:
                         await message.channel.send(
                             message.author.mention + ' Unknown game. Please use `*help games` to view the list of all the supported games.')
