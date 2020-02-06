@@ -56,7 +56,7 @@ async def displayEmbedCountries(message, playerNumber, countries):
     embed.clear_fields()
 
 
-async def civDraft(self, message, pl=0, cipp=0):
+async def civDraft(self, message, players=0, civilizationsPerPlayer=0):
     global civ_dict
 
     def is_valid_number(m):
@@ -66,32 +66,32 @@ async def civDraft(self, message, pl=0, cipp=0):
         try:
             int(f)
             return True
-        except:
+        except (ValueError, Exception):
             return False
 
     # Ask for number of players if not provided
-    if pl == 0:
+    if players == 0:
         await message.channel.send('How many players are playing?')
         try:
             number_players = await self.wait_for('message', check=is_valid_number)
         except asyncio.TimeoutError:
             return
     else:
-        number_players = pl
+        number_players = players
 
-    # Ask for number of civs per player if not provided
-    if cipp == 0:
+    # Ask for number of civilizations per player if not provided
+    if civilizationsPerPlayer == 0:
         await message.channel.send('How many civilizations do you want to draft?')
         try:
-            number_civs = await self.wait_for('message', check=is_valid_number)
+            number_civilizations = await self.wait_for('message', check=is_valid_number)
         except asyncio.TimeoutError:
             return
     else:
-        number_civs = cipp
+        number_civilizations = civilizationsPerPlayer
 
-    if isinstance(number_civs, str) == False:
-        number_civs = number_civs.content
-    if isinstance(number_players, str) == False:
+    if not isinstance(number_civilizations, str):
+        number_civilizations = number_civilizations.content
+    if not isinstance(number_players, str):
         number_players = number_players.content
 
     if is_number(number_players):
@@ -99,29 +99,29 @@ async def civDraft(self, message, pl=0, cipp=0):
     else:
         await message.channel.send(message.author.mention + ' Unknown what `' + number_players + '` means in context')
         return
-    if is_number(number_civs):
+    if is_number(number_civilizations):
         pass
     else:
-        await message.channel.send(message.author.mention + ' Unknown what `' + number_civs + '` means in context')
+        await message.channel.send(message.author.mention + ' Unknown what `' + number_civilizations + '` means in context')
         return
 
-    unusedCivs = []
+    unusedCivilizations = []
     for i in civ_dict:
-        unusedCivs.append(int(i['ID']))
+        unusedCivilizations.append(int(i['ID']))
 
     randomIDArray = []
-    civsLen = len(unusedCivs)
+    civsLen = len(unusedCivilizations)
     for x in range(0, int(number_players)):
         randomIDArray.insert(x, [])
-        for y in range(0, int(number_civs)):
-            exit = False
-            while exit == False:
+        for y in range(0, int(number_civilizations)):
+            exitLoop = False
+            while not exitLoop:
                 randomInt = random.randint(1, civsLen)
                 try:
-                    unusedCivs.remove(randomInt)
+                    unusedCivilizations.remove(randomInt)
                     randomIDArray[x].append(randomInt)
-                    exit = True
-                except:
+                    exitLoop = True
+                except (ValueError, Exception):
                     pass
 
     for p in range(0, len(randomIDArray)):
@@ -138,7 +138,7 @@ async def hoiDraft(self, message, pl=0, cpp=0, notRequireMajor=False):
         try:
             int(f)
             return True
-        except:
+        except (ValueError, Exception):
             return False
 
     # Ask for number of players if not provided
@@ -161,9 +161,9 @@ async def hoiDraft(self, message, pl=0, cpp=0, notRequireMajor=False):
     else:
         number_countries = cpp
 
-    if isinstance(number_countries, str) == False:
+    if not isinstance(number_countries, str):
         number_countries = number_countries.content
-    if isinstance(number_players, str) == False:
+    if not isinstance(number_players, str):
         number_players = number_players.content
 
     if is_number(number_players):
@@ -181,42 +181,42 @@ async def hoiDraft(self, message, pl=0, cpp=0, notRequireMajor=False):
     for g in hoi_dict:
         unusedCountries.append(g)
     randomIDArray = []
-    counLen = len(unusedCountries)
+    countryListLength = len(unusedCountries)
     if notRequireMajor:
         for x in range(0, int(number_players)):
             randomIDArray.insert(x, [])
             for y in range(0, int(number_countries)):
-                exit = False
-                while exit == False:
-                    randomInt = random.randint(1, counLen)
+                exitLoop = False
+                while not exitLoop:
+                    randomInt = random.randint(1, countryListLength)
                     try:
                         unusedCountries.remove(hoi_dict[randomInt-1])
                         randomIDArray[x].append(int(hoi_dict[randomInt-1]['ID']))
-                        exit = True
-                    except:
+                        exitLoop = True
+                    except (ValueError, Exception):
                         pass
     else:
         for x in range(0, int(number_players)):
             randomIDArray.insert(x, [])
             hasMajorCountry = False
             for y in range(0, int(number_countries)):
-                exit = False
-                while exit == False:
-                    randomInt = random.randint(1, counLen)
+                exitLoop = False
+                while not exitLoop:
+                    randomInt = random.randint(1, countryListLength)
                     if hasMajorCountry == False and hoi_dict[randomInt-1]['IsMajor'] == 'True':
                         try:
                             unusedCountries.remove(hoi_dict[randomInt-1])
                             randomIDArray[x].append(int(hoi_dict[randomInt-1]['ID']))
                             hasMajorCountry = True
-                            exit = True
-                        except:
+                            exitLoop = True
+                        except (ValueError, Exception):
                             pass
                     elif hasMajorCountry:
                         try:
                             unusedCountries.remove(hoi_dict[randomInt-1])
                             randomIDArray[x].append(int(hoi_dict[randomInt-1]['ID']))
-                            exit = True
-                        except:
+                            exitLoop = True
+                        except (ValueError, Exception):
                             pass
 
     for p in range(0, len(randomIDArray)):
