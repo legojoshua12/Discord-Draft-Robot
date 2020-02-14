@@ -1,5 +1,7 @@
 # Core Modules
 import asyncio
+import time
+import logging
 from config import config
 
 import discord
@@ -9,10 +11,14 @@ import random
 import json
 
 token = config["token"]
+enableLogs = config["enableLogs"]
+detailedLogs = enableLogs
+if enableLogs:
+    detailedLogs = config["detailedLogs"]
 
 
 async def displayEmbedCivs(message, playerNumber, civs):
-    global civ_dict
+    global civ_dict, detailedLogs
     embed = discord.Embed(
         title='Player ' + str(playerNumber + 1),
         colour=random.randint(0, 0xffffff)
@@ -26,13 +32,15 @@ async def displayEmbedCivs(message, playerNumber, civs):
                 allImages.append(i)
 
     ran = random.randint(1, len(allImages))
+    if detailedLogs:
+        print('Randomly drew ID ' + str(ran) + ' for icon')
     embed.set_thumbnail(url=str(allImages[ran - 1]))
     await message.channel.send(embed=embed)
     embed.clear_fields()
 
 
 async def displayEmbedCountries(message, playerNumber, countries):
-    global hoi_dict
+    global hoi_dict, detailedLogs
     embed = discord.Embed(
         title='Player ' + str(playerNumber + 1),
         colour=random.randint(0, 0xffffff)
@@ -51,13 +59,15 @@ async def displayEmbedCountries(message, playerNumber, countries):
         totalString = totalString + m + '\n'
     embed.add_field(name='\u200b', value=totalString, inline=True)
     ran = random.randint(1, len(allImages))
+    if detailedLogs:
+        print('Randomly drew ID ' + str(ran) + ' for icon')
     embed.set_thumbnail(url=str(allImages[ran - 1]))
     await message.channel.send(embed=embed)
     embed.clear_fields()
 
 
 async def civDraft(self, message, players=0, civilizationsPerPlayer=0):
-    global civ_dict
+    global civ_dict, enableLogs, detailedLogs
 
     def is_valid_number(m):
         return m.author == message.author and m.content.isdigit()
@@ -102,7 +112,8 @@ async def civDraft(self, message, players=0, civilizationsPerPlayer=0):
     if is_number(number_civilizations):
         pass
     else:
-        await message.channel.send(message.author.mention + ' Unknown what `' + number_civilizations + '` means in context')
+        await message.channel.send(
+            message.author.mention + ' Unknown what `' + number_civilizations + '` means in context')
         return
 
     unusedCivilizations = []
@@ -124,12 +135,14 @@ async def civDraft(self, message, players=0, civilizationsPerPlayer=0):
                 except (ValueError, Exception):
                     pass
 
+    if enableLogs:
+        print('Generated array of civs successfully!')
     for p in range(0, len(randomIDArray)):
         await displayEmbedCivs(message, p, randomIDArray[p])
 
 
 async def hoiDraft(self, message, pl=0, cpp=0, notRequireMajor=False):
-    global hoi_dict
+    global hoi_dict, enableLogs, detailedLogs
 
     def is_valid_number(m):
         return m.author == message.author and m.content.isdigit()
@@ -190,11 +203,14 @@ async def hoiDraft(self, message, pl=0, cpp=0, notRequireMajor=False):
                 while not exitLoop:
                     randomInt = random.randint(1, countryListLength)
                     try:
-                        unusedCountries.remove(hoi_dict[randomInt-1])
-                        randomIDArray[x].append(int(hoi_dict[randomInt-1]['ID']))
+                        unusedCountries.remove(hoi_dict[randomInt - 1])
+                        randomIDArray[x].append(int(hoi_dict[randomInt - 1]['ID']))
                         exitLoop = True
                     except (ValueError, Exception):
-                        pass
+                        if detailedLogs:
+                            logging.warning("Generated pre-existing ID")
+                        else:
+                            pass
     else:
         for x in range(0, int(number_players)):
             randomIDArray.insert(x, [])
@@ -203,47 +219,76 @@ async def hoiDraft(self, message, pl=0, cpp=0, notRequireMajor=False):
                 exitLoop = False
                 while not exitLoop:
                     randomInt = random.randint(1, countryListLength)
-                    if hasMajorCountry == False and hoi_dict[randomInt-1]['IsMajor'] == 'True':
+                    if hasMajorCountry == False and hoi_dict[randomInt - 1]['IsMajor'] == 'True':
                         try:
-                            unusedCountries.remove(hoi_dict[randomInt-1])
-                            randomIDArray[x].append(int(hoi_dict[randomInt-1]['ID']))
+                            unusedCountries.remove(hoi_dict[randomInt - 1])
+                            randomIDArray[x].append(int(hoi_dict[randomInt - 1]['ID']))
                             hasMajorCountry = True
                             exitLoop = True
                         except (ValueError, Exception):
                             pass
                     elif hasMajorCountry:
                         try:
-                            unusedCountries.remove(hoi_dict[randomInt-1])
-                            randomIDArray[x].append(int(hoi_dict[randomInt-1]['ID']))
+                            unusedCountries.remove(hoi_dict[randomInt - 1])
+                            randomIDArray[x].append(int(hoi_dict[randomInt - 1]['ID']))
                             exitLoop = True
                         except (ValueError, Exception):
-                            pass
+                            if detailedLogs:
+                                logging.warning("Generated pre-existing ID")
+                            else:
+                                pass
 
+    if enableLogs:
+        print('Generated array of countries successfully!')
     for p in range(0, len(randomIDArray)):
         await displayEmbedCountries(message, p, randomIDArray[p])
+
+
+async def launchLogging(self, details):
+    print('Logged in as')
+    print(self.user.name)
+    if details:
+        print(self.user.id)
+    print('------')
+    print('Loading civs')
 
 
 class MyClientBot(discord.Client):
 
     async def on_ready(self):
-        print('Logged in as')
-        print(self.user.name)
-        print('------')
-        print('Loading civs')
+        global enableLogs, detailedLogs
+        if enableLogs:
+            await launchLogging(self, detailedLogs)
         global civ_dict
+        startTime = 0
+        if detailedLogs:
+            startTime = (time.time() * 1000)
         with open('JSON/civilizations.json', 'r') as f:
             civ_dict = json.load(f)
-        print('Loading countries')
+            if detailedLogs:
+                print("loading file: " + str(f))
+        if enableLogs:
+            print('Loading countries')
         global hoi_dict
         with open('JSON/hoi4Countries.json', 'r') as m:
             hoi_dict = json.load(m)
-        print('Setting Status')
+            if detailedLogs:
+                print("loading file: " + str(m))
+        if detailedLogs:
+            print("Loaded in " + str((time.time() * 1000) - startTime) + "ns")
+        if enableLogs:
+            print('Setting Status')
         await client.change_presence(activity=discord.Game(name='Something Random!'),
                                      status=discord.Status.online, afk=False)
-        print('Done!')
-        print('')
+        if detailedLogs:
+            print("Set in " + str((time.time() * 1000) - startTime) + "ns")
+        if enableLogs:
+            print('Done!')
+            print('')
 
     async def on_message(self, message):
+        global enableLogs, detailedLogs
+        loadingTime = time.time()
         # don't respond to ourselves
         if message.author == self.user.id:
             return
@@ -251,6 +296,8 @@ class MyClientBot(discord.Client):
         if message.content.startswith('*'):
             s = message.content.split()
             messageLength = len(s)
+            if enableLogs:
+                print("User message: `" + message.content + "`")
             if s[0].lower() == '*help':
                 if messageLength == 1:
                     embed = discord.Embed(
@@ -263,6 +310,8 @@ class MyClientBot(discord.Client):
                                     value='Starts a draft, you must specify a game for the robot to draft',
                                     inline=False)
                     await message.channel.send(embed=embed)
+                    if detailedLogs:
+                        print("Processing time: " + str(time.time() - loadingTime) + "ns")
                 elif s[1].lower() == 'games':
                     embed = discord.Embed(
                         title='Games',
@@ -273,12 +322,20 @@ class MyClientBot(discord.Client):
                     embed.add_field(name='*draft civ [players] [civs]', value='Sid Meier’s Civilization V',
                                     inline=False)
                     await message.channel.send(embed=embed)
+                    if detailedLogs:
+                        print("Processing time: " + str(time.time() - loadingTime) + "ns")
             elif messageLength == 1 and s[0].lower() == '*draft':
                 await message.channel.send(
                     message.author.mention + ' Unspecified game. Please use `*help games` to view the list of all the supported games.')
+                if detailedLogs:
+                    print("Processing time: " + str(time.time() - loadingTime) + "ns")
+                    logging.warning("Parse gametype failed")
             elif s[0].lower() != '*draft':
                 await message.channel.send(
                     message.author.mention + ' Unknown command. Use `*help` to view the list of all commands.')
+                if detailedLogs:
+                    print("Processing time: " + str(time.time() - loadingTime) + "ns")
+                    logging.warning("Parse commandtype failed")
             if s[0] == '*draft':
                 if messageLength >= 2:
                     if s[1] == 'civ':
@@ -291,6 +348,10 @@ class MyClientBot(discord.Client):
                         else:
                             await message.channel.send(
                                 message.author.mention + ' Unknown command arguments. Use `*help` for more information.')
+                            if enableLogs:
+                                logging.warning("Unknown command type arguments provided for type civ")
+                        if detailedLogs:
+                            print("Processing time: " + str(time.time() - loadingTime) + "ns")
                     elif s[1] == 'hoi4':
                         if messageLength == 2:
                             await hoiDraft(self, message)
@@ -309,9 +370,16 @@ class MyClientBot(discord.Client):
                         else:
                             await message.channel.send(
                                 message.author.mention + ' Unknown command arguments. Use `*help` for more information.')
+                            if enableLogs:
+                                logging.warning("Unknown command type arguments for type hoi4")
+                        if detailedLogs:
+                            print("Processing time: " + str(time.time() - loadingTime) + "ns")
                     else:
                         await message.channel.send(
                             message.author.mention + ' Unknown game. Please use `*help games` to view the list of all the supported games.')
+                        if detailedLogs:
+                            print("Processing time: " + str(time.time() - loadingTime) + "ns")
+                            logging.warning("Parse gametype failed")
 
 
 civ_dict = None
