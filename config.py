@@ -7,5 +7,7 @@ if fileIO("config.json", "check"):
     config = fileIO("config.json", "load")
 else:
     config = {
-        "token": os.environ["token"]
+        "token": os.environ["token"],
+        "enableLogs": os.environ["enableLogs"],
+        "detailedLogs": os.environ["detailedLogs"]
     }
