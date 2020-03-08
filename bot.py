@@ -10,6 +10,7 @@ import discord
 import random
 import json
 
+# Grab variables
 token = config["token"]
 enableLogs = config["enableLogs"]
 detailedLogs = enableLogs
