@@ -363,7 +363,7 @@
 		"Name": "Portugal",
 		"ID": "61",
 		"Flag": "https://hoi4.paradoxwikis.com/images/1/12/Portugal.png",
-		"IsMajor": "False"
+		"IsMajor": "True"
 	},
 	{
 		"Name": "Kingdom of Romania",
@@ -411,7 +411,7 @@
 		"Name": "Spain",
 		"ID": "69",
 		"Flag": "https://hoi4.paradoxwikis.com/images/2/24/Republican_Spain.png",
-		"IsMajor": "False"
+		"IsMajor": "True"
 	},
 	{
 		"Name": "Sweden",
