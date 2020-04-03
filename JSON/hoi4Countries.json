@@ -189,7 +189,7 @@
 		"Name": "Guangxi Clique",
 		"ID": "32",
 		"Flag": "https://hoi4.paradoxwikis.com/images/6/68/Guangxi_Clique.png",
-		"IsMajor": "True"
+		"IsMajor": "False"
 	},
 	{
 		"Name": "Guatemala",
@@ -303,13 +303,13 @@
 		"Name": "Netherlands",
 		"ID": "51",
 		"Flag": "https://hoi4.paradoxwikis.com/images/3/32/Netherlands.png",
-		"IsMajor": "False"
+		"IsMajor": "True"
 	},
 	{
 		"Name": "New Zealand",
 		"ID": "52",
 		"Flag": "https://hoi4.paradoxwikis.com/images/d/d9/New_Zealand.png",
-		"IsMajor": "False"
+		"IsMajor": "True"
 	},
 	{
 		"Name": "Nicaragua",
@@ -381,7 +381,7 @@
 		"Name": "Shanxi",
 		"ID": "64",
 		"Flag": "https://hoi4.paradoxwikis.com/images/d/d0/Shanxi.png",
-		"IsMajor": "True"
+		"IsMajor": "False"
 	},
 	{
 		"Name": "Siam",
@@ -393,7 +393,7 @@
 		"Name": "Sinkiang",
 		"ID": "66",
 		"Flag": "https://hoi4.paradoxwikis.com/images/b/b8/Sinkiang.png",
-		"IsMajor": "True"
+		"IsMajor": "False"
 	},
 	{
 		"Name": "South Africa",
@@ -471,7 +471,7 @@
 		"Name": "Xibei San Ma",
 		"ID": "79",
 		"Flag": "https://hoi4.paradoxwikis.com/images/6/6e/Xibei_San_Ma.png",
-		"IsMajor": "True"
+		"IsMajor": "False"
 	},
 	{
 		"Name": "Yemen",
@@ -483,13 +483,13 @@
 		"Name": "Yugoslavia",
 		"ID": "81",
 		"Flag": "https://hoi4.paradoxwikis.com/images/f/f3/Yugoslavia.png",
-		"IsMajor": "False"
+		"IsMajor": "True"
 	},
 	{
 		"Name": "Yunnan",
 		"ID": "82",
 		"Flag": "https://hoi4.paradoxwikis.com/images/3/3b/Yunnan.png",
-		"IsMajor": "True"
+		"IsMajor": "False"
 	}
 
 ]
